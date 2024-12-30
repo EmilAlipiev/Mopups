@@ -20,6 +20,8 @@ public interface IPopupNavigation
     Task PopAsync(bool animate = true);
 
     Task PopAllAsync(bool animate = true);
+    
+    Task PopAllAsync<T>(bool animate = true);
 
     Task RemovePageAsync(PopupPage page, bool animate = true);
 }

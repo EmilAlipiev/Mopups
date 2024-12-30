@@ -1,5 +1,4 @@
 ﻿using AsyncAwaitBestPractices;
-
 using Mopups.Events;
 using Mopups.Interfaces;
 using Mopups.Pages;
@@ -54,8 +53,7 @@ public class PopupNavigation : IPopupNavigation
         }
     }
 
-
-
+    /// <inheritdoc />
     public Task PushAsync(PopupPage page, bool animate = true)
     {
         animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
@@ -81,9 +79,12 @@ public class PopupNavigation : IPopupNavigation
             page.SendAppearing();
             await page.AppearingAnimation();
             Pushed?.Invoke(this, new PopupNavigationEventArgs(page, animate));
-        };
+        }
+
+        ;
     }
 
+    /// <inheritdoc />
     public async Task PopAllAsync(bool animate = true)
     {
 		animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
@@ -94,15 +95,24 @@ public class PopupNavigation : IPopupNavigation
         }
     }
 
-    public Task PopAsync(bool animate = true)
+    /// <inheritdoc />
+    public async Task PopAllAsync<T>(bool animate = true)
     {
-		animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
+        if (!MopupService.Instance.PopupStack.Any(p => p is T))
+            return;
 
-		return _popupStack.Count <= 0
-            ? throw new InvalidOperationException("PopupStack is empty")
-            : RemovePageAsync(PopupStack[PopupStack.Count - 1], animate);
+        var popupTasks = MopupService.Instance.PopupStack.Where(p => p is T).Select(page => MopupService.Instance.RemovePageAsync(page, animate));
+
+        await Task.WhenAll(popupTasks);
     }
 
+    /// <inheritdoc />
+    public Task PopAsync(bool animate = true)
+    {
+        return _popupStack.Count > 0 ? RemovePageAsync(PopupStack[^1], animate) : Task.FromResult(false);
+    }
+
+    /// <inheritdoc />
     public Task RemovePageAsync(PopupPage page, bool animate = true)
     {
 		animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
@@ -139,4 +149,3 @@ public class PopupNavigation : IPopupNavigation
         }
     }
 }
-
