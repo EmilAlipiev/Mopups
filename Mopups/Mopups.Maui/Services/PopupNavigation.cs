@@ -87,9 +87,9 @@ public class PopupNavigation : IPopupNavigation
     /// <inheritdoc />
     public async Task PopAllAsync(bool animate = true)
     {
-		animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
+        animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
 
-		while (MopupService.Instance.PopupStack.Count > 0)
+        while (MopupService.Instance.PopupStack.Count > 0)
         {
             await PopAsync(animate);
         }
@@ -115,9 +115,9 @@ public class PopupNavigation : IPopupNavigation
     /// <inheritdoc />
     public Task RemovePageAsync(PopupPage page, bool animate = true)
     {
-		animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
+        animate = animate && Animations.AnimationHelper.SystemAnimationsEnabled;
 
-		if (page == null)
+        if (page == null)
             throw new InvalidOperationException("Page can not be null");
 
         if (!_popupStack.Contains(page))
